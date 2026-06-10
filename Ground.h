@@ -20,6 +20,9 @@ public:
 
 	//開放
 	void Release() override;
+	//ハンドル
+	int GetModelHandle() { return hModel_; }
+
 private:
 	int hModel_;
 };
