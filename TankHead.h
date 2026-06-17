@@ -2,13 +2,13 @@
 #include "Engine/GameObject.h"
 
 //テストシーンを管理するクラス
-class Tank : public GameObject
+class TankHead : public GameObject
 {
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
-	Tank(GameObject* parent);
-	~Tank();
+	TankHead(GameObject* parent);
+	~TankHead();
 	//初期化
 	void Initialize() override;
 
@@ -20,12 +20,6 @@ public:
 
 	//開放
 	void Release() override;
-	void NowPosition();
 private:
 	int hModel_;//タンクモデル
-	int camType_;//カメラの種類
-	void SetFixedCam();
-	void SetTpsCom();
-	void SetFpsCom();
-
 };

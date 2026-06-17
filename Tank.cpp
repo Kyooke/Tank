@@ -1,14 +1,15 @@
 #include "Tank.h"
 #include "Engine//Model.h"
-#include"Engine//Input.h"
-#include "Engine//Debug.h"
-#include"Ground.h"
-
+#include "Engine//Input.h"
+#include  "Engine//Debug.h"
+#include  "Ground.h"
+#include  "Engine//Camera.h"
 namespace
 {
 	XMVECTOR vFront = { 0,0,1,0 };
 	const int CAM_TYPE_MAX = 3;
-	float moveSpeed = 0.1f;
+	float moveSpeed = 0.1f;//タンクのスピード
+	const float CAM_HEIGHT_BIAS = 0.2f;//タンクの高さ
 	enum CAM_TYPE
 	{
 		FIXED_CAM,//固定カメラ
@@ -35,6 +36,10 @@ void Tank::Initialize()
 
 void Tank::Update()
 {
+	XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
+	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+	//XMVector3TransformCoordは、ベクトルを行列で変換する関数。回転行列をベクトル荷掛けると回転ベクトルが得られる。
+	XMVECTOR vMove = XMVector3TransformCoord(vFront, matRot);
 	if (Input::IsKeyDown(DIK_C))
 	{
 		camType_ = (camType_ + 1) % CAM_TYPE_MAX;
@@ -42,12 +47,34 @@ void Tank::Update()
 	switch (camType_)
 	{
 	case FIXED_CAM:
+		SetFixedCam();
 		break;
 	case TPS_CAM:
+	{
+		XMFLOAT3 camPos = transform_.position_;
+		camPos.y = camPos.y + 5.0f;
+		camPos.z = camPos.z - 13.0f;
+		Camera::SetPosition(camPos);
+		Camera::SetTarget(transform_.position_);
+	}
 		break;
 	case TPS_CAMROT:
+	{
+		XMFLOAT3 camPos;
+		XMVECTOR vCAM = { 0,3,-7,0 };
+		vCAM = XMVector3TransformCoord(vCAM, matRot);
+		XMStoreFloat3(&camPos, vPos + vCAM);
+		Camera::SetPosition(camPos);
+		Camera::SetTarget(transform_.position_);
+	}
 		break;
 	case FPS_CAM:
+		XMFLOAT3 camPos = transform_.position_;
+		camPos.y = camPos.y + CAM_HEIGHT_BIAS;
+		Camera::SetPosition(camPos);
+		XMFLOAT3 camTarget;
+		XMStoreFloat3(&camTarget, vPos + vMove);
+		Camera::SetTarget(camTarget);
 		break;
 	}
 
@@ -65,10 +92,6 @@ void Tank::Update()
 
 	if (Input::IsKey(DIK_W))
 	{
-		XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
-		XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-		//XMVector3TransformCoordは、ベクトルを行列で変換する関数。回転行列をベクトル荷掛けると回転ベクトルが得られる。
-		XMVECTOR vMove = XMVector3TransformCoord(vFront, matRot);
 		vPos = vPos + moveSpeed * vMove;
 		XMStoreFloat3(&transform_.position_, vPos);
 	}
@@ -97,4 +120,23 @@ void Tank::Draw()
 
 void Tank::Release()
 {
+}
+
+void Tank::NowPosition()
+{
+	XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
+	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
+	//XMVector3TransformCoordは、ベクトルを行列で変換する関数。回転行列をベクトル荷掛けると回転ベクトルが得られる。
+	XMVECTOR vMove = XMVector3TransformCoord(vFront, matRot);
+}
+
+void Tank::SetFixedCam()
+{
+	Camera::SetTarget(XMFLOAT3(0, 0, 0));
+	Camera::SetPosition(XMFLOAT3(0, 20, -30));
+}
+
+void Tank::SetTpsCom()
+{
+	
 }
