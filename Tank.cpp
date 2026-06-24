@@ -4,10 +4,12 @@
 #include  "Engine//Debug.h"
 #include  "Ground.h"
 #include  "Engine//Camera.h"
+#include "Tankhead.h"
+
 namespace
 {
 	XMVECTOR vFront = { 0,0,1,0 };
-	const int CAM_TYPE_MAX = 3;
+	const int CAM_TYPE_MAX = 4;
 	float moveSpeed = 0.1f;//タンクのスピード
 	const float CAM_HEIGHT_BIAS = 0.2f;//タンクの高さ
 	enum CAM_TYPE
@@ -32,6 +34,7 @@ Tank::~Tank()
 void Tank::Initialize()
 {
 	hModel_ = Model::Load("Tankbody.fbx");
+	Instantiate<TankHead>(this);
 }
 
 void Tank::Update()
@@ -95,6 +98,11 @@ void Tank::Update()
 		vPos = vPos + moveSpeed * vMove;
 		XMStoreFloat3(&transform_.position_, vPos);
 	}
+	if (Input::IsKey(DIK_S))
+	{
+		vPos = vPos - moveSpeed * vMove;
+		XMStoreFloat3(&transform_.position_, vPos);
+	}
 	//レイキャストして、浮いてたら地面まで落とす
 	RayCastData data;
 	data.start = transform_.position_;
@@ -134,9 +142,4 @@ void Tank::SetFixedCam()
 {
 	Camera::SetTarget(XMFLOAT3(0, 0, 0));
 	Camera::SetPosition(XMFLOAT3(0, 20, -30));
-}
-
-void Tank::SetTpsCom()
-{
-	
 }

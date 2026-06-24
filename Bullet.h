@@ -2,13 +2,13 @@
 #include "Engine/GameObject.h"
 
 //テストシーンを管理するクラス
-class TankHead : public GameObject
+class Bullet : public GameObject
 {
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
-	TankHead(GameObject* parent);
-	~TankHead(){}
+	Bullet(GameObject* parent);
+	~Bullet(){}
 	//初期化
 	void Initialize() override;
 
@@ -20,6 +20,8 @@ public:
 
 	//開放
 	void Release() override;
+	void SetMoveVector(XMFLOAT3 move) { move_ = move; }
 private:
 	int hModel_;//タンクヘッドモデル
+	XMFLOAT3 move_;
 };

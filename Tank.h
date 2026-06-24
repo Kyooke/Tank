@@ -25,7 +25,5 @@ private:
 	int hModel_;//タンクモデル
 	int camType_;//カメラの種類
 	void SetFixedCam();
-	void SetTpsCom();
-	void SetFpsCom();
 
 };

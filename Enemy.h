@@ -2,13 +2,13 @@
 #include "Engine/GameObject.h"
 
 //テストシーンを管理するクラス
-class TankHead : public GameObject
+class Enemy : public GameObject
 {
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
-	TankHead(GameObject* parent);
-	~TankHead(){}
+	Enemy(GameObject* parent);
+	~Enemy() {}
 	//初期化
 	void Initialize() override;
 
@@ -20,6 +20,10 @@ public:
 
 	//開放
 	void Release() override;
+
+	int OnCollision();
+
+	void GetPosition();
 private:
 	int hModel_;//タンクヘッドモデル
 };
