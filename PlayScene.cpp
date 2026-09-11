@@ -32,7 +32,7 @@ void PlayScene::Update()
 	{
 		float randX = rand() + transform_.position_.z;
 		float randZ = rand() + transform_.position_.z;
-		XMVECTOR position = XMFLOAT3(randX, transform_.position_.y, randZ);
+		XMStringVecroe position = XMFLOAT3(randX, transform_.position_.y, randZ);
 		Instantiate<Enemy>(this,position);
 
 	}
