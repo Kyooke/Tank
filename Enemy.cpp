@@ -1,12 +1,12 @@
 #include "Enemy.h"
-#include"Engine//Model.h"
+#include "Engine//Model.h"
 #include "Ground.h"
 #include "Engine//SphereCollider.h"
+#include "PlayScene.h"
 
 Enemy::Enemy(GameObject* parent)
 	: GameObject(parent, "Enemy"), hModel_(-1)
 {
-
 }
 
 void Enemy::Initialize()
@@ -18,19 +18,21 @@ void Enemy::Initialize()
 }
 
 void Enemy::Update()
-{ 
+{
 	RayCastData data;
 	data.start = transform_.position_;
-	data.start.y = 0.0f;//地面は0より下に掘られて作られている。そうじゃないときはもっと上から！
-	data.dir = { 0,-1,0 };//真下にレイを飛ばす
+	data.start.y = 0.0f;
+	data.dir = { 0,-1,0 };
 
 	Ground* pGround = (Ground*)FindObject("Ground");
-	int hGroundModel = pGround->GetModelHandle();
-	Model::RayCast(hGroundModel, &data);
-	if (data.hit == true)
+	if (pGround != nullptr)
 	{
-		transform_.position_.y = -data.dist;
-		//レイの発射一から、地面までの距離を引いて、地面をぴったりつける
+		int hGroundModel = pGround->GetModelHandle();
+		Model::RayCast(hGroundModel, &data);
+		if (data.hit == true)
+		{
+			transform_.position_.y = -data.dist;
+		}
 	}
 }
 
@@ -44,8 +46,18 @@ void Enemy::Release()
 {
 }
 
-int Enemy::OnCollision()
+void Enemy::OnCollision(GameObject* pTarget)
 {
-	KillMe();
-	 return -1;
+	if (pTarget != nullptr && pTarget->GetObjectName() == "Bullet")
+	{
+		pTarget->KillMe();
+
+		KillMe();
+
+		PlayScene* pScene = (PlayScene*)FindObject("PlayScene");
+		if (pScene != nullptr)
+		{
+			pScene->DecreaseEnemyCount();
+		}
+	}
 }

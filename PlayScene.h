@@ -16,4 +16,6 @@ public:
 	void Draw() override;
 	//ŠJ•ú
 	void Release() override;
+
+	void DecreaseEnemyCount();
 };

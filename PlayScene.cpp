@@ -1,15 +1,15 @@
-#include "PlayScene.h"
+ï»¿#include "PlayScene.h"
 #include "Ground.h"
 #include "Tank.h"
 #include "Enemy.h"
-#include <vector>
-//#include "TankHead.h"
+#include <cstdlib>
+
 namespace
 {
 	const int ENEMY_MAX = 5;
-	int NOW_ENEMY = 1;
+	int nowEnemyCount = 1; 
 }
-//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+
 PlayScene::PlayScene(GameObject* parent)
 	: GameObject(parent, "PlayScene")
 {
@@ -20,21 +20,30 @@ void PlayScene::Initialize()
 	Instantiate<Ground>(this);
 	Instantiate<Tank>(this);
 	Instantiate<Enemy>(this);
-	
 }
 
 void PlayScene::Update()
 {
-	Enemy* enemy;
-	enemy->OnCollision();
-	NOW_ENEMY += enemy;
-	if (NOW_ENEMY < ENEMY_MAX)
-	{
-		float randX = rand() + transform_.position_.z;
-		float randZ = rand() + transform_.position_.z;
-		XMStringVecroe position = XMFLOAT3(randX, transform_.position_.y, randZ);
-		Instantiate<Enemy>(this,position);
 
+	if (nowEnemyCount < ENEMY_MAX)
+	{
+		Enemy* newEnemy = Instantiate<Enemy>(this);
+
+		float randX = static_cast<float>((rand() % 40) - 20); // -20 ã€œ 20
+		float randZ = static_cast<float>((rand() % 40) - 20); // -20 ã€œ 20
+		XMFLOAT3 pos = XMFLOAT3(randX, 0.0f, randZ);
+
+		newEnemy->SetPosition(pos);
+
+		nowEnemyCount++;
+	}
+}
+
+void PlayScene::DecreaseEnemyCount()
+{
+	if (nowEnemyCount > 0)
+	{
+		nowEnemyCount--;
 	}
 }
 

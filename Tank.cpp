@@ -41,7 +41,7 @@ void Tank::Update()
 {
 	XMVECTOR vPos = XMLoadFloat3(&transform_.position_);
 	XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(transform_.rotate_.y));
-	//XMVector3TransformCoordは、ベクトルを行列で変換する関数。回転行列をベクトル荷掛けると回転ベクトルが得られる。
+
 	XMVECTOR vMove = XMVector3TransformCoord(vFront, matRot);
 	if (Input::IsKeyDown(DIK_C))
 	{
